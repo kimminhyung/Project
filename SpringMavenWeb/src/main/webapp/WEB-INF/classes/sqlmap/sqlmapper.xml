@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="Query">
+
+   <resultMap id="board" type="com.spring.maven.dto.BoardDTO">
+	   <result property="title" column="TITLE" jdbcType="CLOB" javaType="java.lang.String" />
+	   <result property="hitCnt" column="HIT_CNT" jdbcType="CLOB" javaType="java.lang.String" />
+	   <result property="recmCnt" column="RECM_CNT" jdbcType="CLOB" javaType="java.lang.String" />
+	   <result property="content" column="CONTENT" jdbcType="CLOB" javaType="java.lang.String" />
+   </resultMap>
+   
+   <select id="selectCateName" parameterType="int" resultType="String" >
+   	select cate_name from ai_cate where cate_no = #{no}
+   </select>
+   
+   <select id="selectCateList" resultType="com.spring.maven.dto.CateVO" >
+		select
+		 cc.cate_no,
+		 cc.cate_name,
+		 nvl(dd.cnt, 0) as cnt
+		from ai_cate cc,(
+		    select 
+		     a.cate_no,
+		     a.cate_name,
+		     count(*) as cnt
+		    from ai_cate a, ai_board b
+		    where
+		     a.cate_no = b.cate_no
+		    group by a.cate_no, a.cate_name
+		    order by a.cate_no
+		 )dd
+		where
+		 cc.cate_no = dd.cate_no(+)
+		order by cc.cate_no
+   </select>
+
+	<select id="selectBoardList" parameterType="com.spring.maven.dto.PageModel"  resultType="com.spring.maven.dto.BoardDTO">
+	select
+	    rowIndex,
+		cate_no,
+		cate_name,
+		NO,
+		TITLE,
+		USER_ID   ,
+		HIT_CNT   ,
+		RECM_CNT  ,
+		CONTENT   ,
+		REG_DATE,
+		UPD_DATE,
+		( select count(*) as cnt from ai_reply where pno = a.no) as REP_CNT
+	from(
+		 select 
+		    rownum as rowIndex,
+		    a.cate_no,
+		    cate_name,
+		  	NO        ,
+			TITLE     ,
+			USER_ID   ,
+			HIT_CNT   ,
+			RECM_CNT  ,
+			CONTENT   ,
+			TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
+			TO_CHAR(UPD_DATE, 'YYYY-MM-DD') AS UPD_DATE
+		 from ai_board a, ai_cate b
+		 where
+		    a.cate_no = b.cate_no
+		    and a.cate_no = #{cateNo}
+		 order by no desc
+	 )a 
+	 where
+	    rowIndex between #{startIndex} and #{endIndex}
+	</select>
+	
+	<select id="selectBoardListCnt" resultType="int" parameterType="int" >
+		select count(*) as cnt from ai_board where cate_no =#{cateNo}
+	
+	</select>
+	
+	<select id="selectBoardView" parameterType="BoardDTO" resultType="com.spring.maven.dto.BoardDTO">
+		 select 
+		 	a.cate_no,
+		    cate_name,
+		  	NO        ,
+			TITLE     ,
+			USER_ID   ,
+			HIT_CNT   ,
+			RECM_CNT  ,
+			CONTENT  ,
+			TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI') AS REG_DATE,
+			TO_CHAR(UPD_DATE, 'YYYY-MM-DD HH24:MI') AS UPD_DATE,
+			( select count(*) as cnt from ai_reply where pno = a.no) as REP_CNT
+		 from ai_board a, ai_cate b
+		 where
+		    no = #{no}		  
+		    and a.cate_no = b.cate_no		    
+	</select>
+	
+	<select id="makeNo" resultType="java.lang.String">
+	    select SEQ_BOARD.NEXTVAL from dual
+	</select>
+	
+	<delete id="deleteBoard" parameterType="String">
+		delete from ai_board where no= #{no}	
+	</delete>
+	
+	<update id="addHitCount" parameterType="BoardDTO">
+		update ai_board set hit_cnt = #{hitCnt} where no=#{no}
+	</update>
+	
+	<insert id="insertBoard" parameterType="com.spring.maven.dto.BoardDTO">
+	  insert into ai_board (no, title, user_id, recm_cnt, hit_cnt, content, REG_DATE, UPD_DATE, cate_no)
+	  values(#{no}, #{title}, 'fireguy', 0, 0, #{content, jdbcType=CLOB, javaType=String} , SYSDATE, SYSDATE, #{cateNo})
+	</insert>
+	
+	<update id="updateBoard" parameterType="BoardDTO">
+		update ai_board set title=#{title}, content=#{content, jdbcType=CLOB, javaType=String}, upd_date=sysdate where no=#{no} and cate_no=#{cateNo}
+	</update>
+	
+	<!-- 댓글 (Reply) sql 부분 -->
+	<!-- 댓글 no 채번 (부모 게시물에 대한 최대 번호 + 1) -->
+	<select id="selectReplyNo" parameterType="int" resultType="int" >
+		 SELECT 
+		  NVL(MAX(NO),0)+1 AS NO  
+		 FROM AI_REPLY
+		 WHERE
+		    PNO = #{pno}
+	</select>
+	
+	<insert id="insertReply" parameterType="ReplyDTO">	
+	INSERT INTO AI_REPLY 
+		(NO, PNO, CONTENT, WRITER, REG_DATE, UPD_DATE)
+	VALUES
+		(#{no}, #{pno}, #{content, jdbcType=CLOB, javaType=String}, 'fireguy', sysdate, sysdate )
+	</insert>
+	
+	<select id="selectReplyList" parameterType="int" resultType="ReplyDTO">
+		SELECT
+		   NO, 
+		   PNO, 
+		   CONTENT, 
+		   WRITER, 
+		   TO_CHAR(REG_DATE,'YYYY-MM-DD HH24:MI') AS REG_DATE, 
+		   TO_CHAR(UPD_DATE,'YYYY-MM-DD HH24:MI') AS UPD_DATE
+		FROM AI_REPLY
+		WHERE
+		   PNO = #{pno}	
+	</select>
+	
+	<delete id="deleteReply" parameterType="ReplyDTO">
+		DELETE AI_REPLY WHERE PNO=#{pno} and NO=#{no}
+	</delete>
+		
+</mapper>
+
+
+     
