@@ -27,7 +27,7 @@
 		});	
 		
 		function goPage(pageNo){
-			location.href="/SpringMavenWeb/list?curPageNo="+pageNo;
+			location.href="/SpringMavenWeb/list?curPageNo="+pageNo+"&cateNo=${cateNo}";
 		}
 		
 		$(document).attr("designMode", "off");
@@ -90,8 +90,6 @@
 <c:if test="${pageInfo.pageNext != '' }" >
 <a href="javascript:goPage(<c:out value='${pageInfo.endPage+1}'/>)"><c:out value="${pageInfo.pageNext}" /></a>
 </c:if>
-
-
 </p>
 
 

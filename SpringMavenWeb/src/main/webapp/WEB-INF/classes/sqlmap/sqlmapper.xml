@@ -51,23 +51,27 @@
 		UPD_DATE,
 		( select count(*) as cnt from ai_reply where pno = a.no) as REP_CNT
 	from(
-		 select 
-		    rownum as rowIndex,
-		    a.cate_no,
-		    cate_name,
-		  	NO        ,
-			TITLE     ,
-			USER_ID   ,
-			HIT_CNT   ,
-			RECM_CNT  ,
-			CONTENT   ,
-			TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
-			TO_CHAR(UPD_DATE, 'YYYY-MM-DD') AS UPD_DATE
-		 from ai_board a, ai_cate b
-		 where
-		    a.cate_no = b.cate_no
-		    and a.cate_no = #{cateNo}
-		 order by no desc
+	      select 
+	         rownum as rowIndex,
+	         bbb.*
+	      from(
+				 select 
+				    a.cate_no,
+				    cate_name,
+				  	NO        ,
+					TITLE     ,
+					USER_ID   ,
+					HIT_CNT   ,
+					RECM_CNT  ,
+					CONTENT   ,
+					TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
+					TO_CHAR(UPD_DATE, 'YYYY-MM-DD') AS UPD_DATE
+				 from ai_board a, ai_cate b
+				 where
+				    a.cate_no = b.cate_no
+				    and a.cate_no = #{cateNo}
+				 order by no desc
+			)bbb
 	 )a 
 	 where
 	    rowIndex between #{startIndex} and #{endIndex}

@@ -34,9 +34,7 @@
 					    focus : false,
 					    lang : 'ko-KR' // 기본 메뉴언어 US->KR로 변경 
 					}
-			);			
-			
-			
+			);	
 			$("#btnWrite").click( function (){
 				
 				var formObj = $("form[id=form1]");
@@ -48,8 +46,6 @@
 						return false;
 					}
 				}
-				
-				
 				var htmlStr = $("#summernote").summernote('code');
 				htmlStr = htmlStr.trim();
 				
@@ -57,20 +53,14 @@
 					alert("글 내용을 입력 해주세요 !!");
 					$("#summernote").summernote({focus:true});
 					return false;
-				}
-				
-				$("#summernote").summernote("code", "<br>" + $("#summernote").summernote("code") );
-								
+				}				
+				$("#summernote").summernote("code", "<br>" + $("#summernote").summernote("code") );								
 				$("#form1").submit();
-			});
-			
+			});	
 			
 			$("#btnCancel").click(function (){
 				location.href ="/SpringMavenWeb/list/";
 			});
-			
-			
-			
 		}); 
 	</script>
 

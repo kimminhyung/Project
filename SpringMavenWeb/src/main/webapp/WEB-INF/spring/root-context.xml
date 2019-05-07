@@ -10,7 +10,7 @@
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
 	<!-- 데이터베이스 연결 -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
 		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:ORCL" />
@@ -23,6 +23,18 @@
 		<property name="mapperLocations" value="classpath:sqlmap/sqlmapper.xml" />
 		<property name="configLocation" value="classpath:config/configuration.xml"/>
 	</bean> <!-- SqlSession -->
+	
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource"> 
+	   <constructor-arg ref="dataSource2" /> 
+	   <property name="logFormatter"> 
+		   <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter"> 
+		      <property name="loggingType" value="MULTI_LINE" /> <property name="sqlPrefix" value="SQL : "/> 
+	       </bean> 
+       </property> 
+    </bean>
+
+
+
 	
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"	destroy-method="clearCache">
 		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />

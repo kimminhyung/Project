@@ -1,3 +1,4 @@
+8
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -15,6 +16,7 @@
 	<script type="text/javascript" src="/SpringMavenWeb/js/jquery-3.2.1.js"></script>	
 	
 	<script type="text/javascript">
+
 		$(document).ready(function(){
 			$("#btnWrite").click(function(){
 				location.href="/SpringMavenWeb/write";
@@ -25,7 +27,9 @@
 			});			
 		});	
 		
-		function goCate(no){
+		function goCate(no, cateName){
+			$("#selCateNo").val(no);
+			$("#selCateName").val(cateName);
 			$("#innerFrame").attr("src", "/SpringMavenWeb/list?cateNo="+no);			
 		}
 		
@@ -48,12 +52,18 @@
 	<h1>Working Note</h1>
 </header>
 
-
 <nav>
+<p>
+<SPAN>선택카테고리&nbsp;&nbsp;<input type="text" id="selCateNo" style="width:30px" value=""></input></SPAN>
+<SPAN>&nbsp;<input type="text" id="selCateName" style="width:100px" value=""></input></SPAN>
+</p>
+<span class="button medium icon"><span class="add" ></span><button type="button"  id="btnMody">추가</button></span>
+<span class="button medium icon"><span class="add" ></span><button type="button"  id="btnMody">하위추가</button></span>
+<span class="button medium icon"><span class="add" ></span><button type="button"  id="btnMody">삭제</button></span>
 <!-- img src="/SpringMavenWeb/image/image1.gif" width="100" height="60" -->
 <ul>
 <c:forEach var="cate" items="${cateList}" varStatus="status">
- <li><H3><a href="javascript:goCate(${cate.cateNo})">${cate.cateName}<c:if test="${cate.cnt ne 0 }"> <font color="blue">[${cate.cnt}]</font></c:if></a></H3></li>
+ <li><H3><a href="javascript:goCate(${cate.cateNo}, '${cate.cateName}')">${cate.cateName}<c:if test="${cate.cnt ne 0 }"> <font color="blue">[${cate.cnt}]</font></c:if></a></H3></li>
 </c:forEach>
 </ul>
 
