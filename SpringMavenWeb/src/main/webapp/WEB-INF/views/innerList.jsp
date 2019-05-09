@@ -66,7 +66,7 @@
 	<c:forEach var="item" items="${list}" varStatus="status">
 		<tr>
 			<td><a href="/SpringMavenWeb/view/${item.no}/${pageInfo.curPage}">${item.no}</a></td>
-			<td  align="left"><a href="/SpringMavenWeb/view/${item.no}/${pageInfo.curPage}"> ${item.title}</a></td>				
+			<td  align="left"><b><a href="/SpringMavenWeb/view/${item.no}/${pageInfo.curPage}"> ${item.title}</a></b></td>				
 			<td>${item.hitCnt}</td>		
 			<td style="color:red"><c:if test="${item.repCnt ne 0 }"> (${item.repCnt}) </c:if></td>					
 			<td>${item.recmCnt}</td>			

@@ -1,4 +1,4 @@
-package com.spring.maven;
+package com.spring.maven.controller;
 
 import java.util.List;
 
@@ -152,7 +152,7 @@ public class BoardController {
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public String showList(Model model, 
 			@RequestParam(value="curPageNo", defaultValue="1") int curPageNo, 
-			@RequestParam(value="cateNo", defaultValue="1") int cateNo			
+			@RequestParam(value="cateNo", defaultValue="0") int cateNo			
 			){
 		
 		int totRow = dao.selectListCnt(cateNo);
@@ -160,7 +160,7 @@ public class BoardController {
 		PageModel pageInfo = PageUtil.getPageInfo(totRow, curPageNo);	
 		pageInfo.setCateNo(cateNo);		
 	
-		
+		  
 		for(String pageNo : pageInfo.getPageList()){
 			logger.info("pageList No :"+ pageNo);
 		}

@@ -122,18 +122,18 @@
 
 	<table align="center" width="100%" bgcolor="white">
 		<tr>
-			<td width="8%" bgcolor="gray" > 제목 </td>
+			<td width="8%" bgcolor="gray" style="color:white" > 제목 </td>
 			<td id="titletd" contentEditable="false"><b>${model.title}</b></td>			
 		</tr>
 		<tr>
-			<td  bgcolor="gray"> 글쓴이 </td>
+			<td  bgcolor="gray" style="color:white"> 글쓴이 </td>
 			<td><b>${model.userId} (${model.updDate})</b></td>			
 		</tr>
 		
 		<!-- 본문내용 -->
 		<tr height="300" valign="top">
-			<td  bgcolor="gray"> 내용 </td>
-			<td id="summernote"><c:out value="${model.content}" escapeXml="false" /> </td>			
+			<td  bgcolor="gray" style="color:white"> 내용 </td>
+			<td id="summernote"><b><c:out value="${model.content}" escapeXml="false" /></b></td>			
 		</tr>	
 		<tr>
 		    <td align="left" bgcolor="#aaaaaa" colspan="2" > 
@@ -147,7 +147,7 @@
 				<td align="right" bgcolor="gray">
 					<span class="button medium icon"><span class="check"></span><button type="button" id="replyDel" onClick="javascript:del(${repModel.no})">삭제</button></span>
 				</td>
-				<td><b>작성자: ${repModel.writer} (${repModel.regDate})</b><br><br>${repModel.content}</td>
+				<td><b>작성자: ${repModel.writer} (${repModel.regDate})</b><br><br><b>${repModel.content}</b></td>
 			</tr>
 		</c:forEach>
 		
